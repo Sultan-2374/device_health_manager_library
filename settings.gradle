@@ -1,0 +1,3 @@
+rootProject.name = "DeviceInfoPlugin2"
+//include ':app'
+include ':mylibrary'
