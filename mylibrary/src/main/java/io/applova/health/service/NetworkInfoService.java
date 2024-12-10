@@ -12,7 +12,6 @@ import io.applova.health.beans.NetworkInfo;
 
 public class NetworkInfoService {
 
-    private static final String TAG = "NetworkInfoService";
     private final Context context;
     private final TelephonyManager telephonyManager;
 
@@ -20,18 +19,6 @@ public class NetworkInfoService {
         this.context = context;
         this.telephonyManager = telephonyManager;
     }
-
-//    public void logNetworkInfo(){
-//        NetworkInfo networkInfo = deviceInfoManager.getNetworkInfo();
-//        Log.d(TAG, "Is Connected: " + networkInfo.isConnected());
-//        Log.d(TAG, "Connection Type: " + (networkInfo.getType() != null ? networkInfo.getType() : "Unknown"));
-//        Log.d(TAG, "Is WiFi: " + networkInfo.isWifi());
-//        Log.d(TAG, "Is Mobile: " + networkInfo.isMobile());
-//        Log.d(TAG, "Is VPN: " + networkInfo.isVPN());
-//        Log.d(TAG, "Network Quality: " + (networkInfo.getNetworkQuality() != null ? networkInfo.getNetworkQuality() : "Unknown"));
-//        Log.d(TAG, "Bandwidth: " + networkInfo.getBandwidth() + " Mbps");
-//        Log.d(TAG, "Signal Strength: " + (networkInfo.getSignalStrength() != null ? networkInfo.getSignalStrength() : "Unknown"));
-//    }
 
     public NetworkInfo getNetworkInfo() {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -45,7 +32,10 @@ public class NetworkInfoService {
         int bandwidth = 0;
         String signalStrength = "Unknown";
 
-        android.net.Network network = connectivityManager.getActiveNetwork();
+        android.net.Network network = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            network = connectivityManager.getActiveNetwork();
+        }
         NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
 
         if (capabilities != null) {

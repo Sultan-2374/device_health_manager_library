@@ -35,14 +35,14 @@ public class NetworkInfo {
     @Override
     public String toString() {
         return "NetworkInfo{" +
-                "isConnected=" + isConnected +
-                ", type='" + type + '\'' +
-                ", isWifi=" + isWifi +
-                ", isMobile=" + isMobile +
-                ", isVPN=" + isVPN +
-                ", networkQuality='" + networkQuality + '\'' +
-                ", bandwidth=" + bandwidth +
-                ", signalStrength='" + signalStrength + '\'' +
+                "isConnected:" + isConnected +
+                ", type:'" + type + '\'' +
+                ", isWifi:" + isWifi +
+                ", isMobile:" + isMobile +
+                ", isVPN:" + isVPN +
+                ", networkQuality:'" + networkQuality + '\'' +
+                ", bandwidth:" + bandwidth +
+                ", signalStrength:'" + signalStrength + '\'' +
                 '}';
     }
 }

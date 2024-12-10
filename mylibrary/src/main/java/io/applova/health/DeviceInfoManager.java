@@ -2,46 +2,28 @@ package io.applova.health;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
-
 import io.applova.health.beans.AllMetricsInfo;
 import io.applova.health.beans.BatteryInfo;
 import io.applova.health.beans.ClientInfo;
 import io.applova.health.beans.DeviceInfo;
 import io.applova.health.beans.NetworkInfo;
 import io.applova.health.beans.StorageInfo;
-import io.applova.health.job.DeviceInfoJob;
 import io.applova.health.service.BatteryInfoService;
 import io.applova.health.service.DeviceInfoService;
 import io.applova.health.service.NetworkInfoService;
 import io.applova.health.service.StorageInfoService;
-import io.realm.Realm;
 
 public class DeviceInfoManager {
 
-    private static final String PREFS_NAME = "DeviceInfoPrefs";
-    private static final String KEY_UNIQUE_ID = "uniqueId";
-
     private final Context context;
-//    public DeviceInfoManager(DeviceInfoJob deviceInfoJob) {
-//    }
 
     public DeviceInfoManager (Context context){
         this.context = context;
     }
 
-//    private final TelephonyManager telephonyManager;
-
-//    public String getDeviceId() {
-//        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-//    }
-
-//    public DeviceInfoManager(Context context) {
-//        this.context = context;
-//        this.telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-//    }
-
     public AllMetricsInfo getAllMetrics(){
 
+        //battery info
         BatteryInfoService batteryInfoService = new BatteryInfoService(context);
         BatteryInfo batteryInfo = batteryInfoService.getBatteryInfo();
 
@@ -49,9 +31,6 @@ public class DeviceInfoManager {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         NetworkInfoService networkInfoService = new NetworkInfoService(context, telephonyManager);
         NetworkInfo networkInfo = networkInfoService.getNetworkInfo();
-
-//        NetworkInfoService networkInfoService = new NetworkInfoService(context);
-//        NetworkInfo networkInfo = networkInfoService.getNetworkInfo();
 
         //client info
         ClientInfo clientInfo = new ClientInfo();
@@ -66,13 +45,17 @@ public class DeviceInfoManager {
 
         AllMetricsInfo allMetricsInfo = new AllMetricsInfo();
         allMetricsInfo.setBatteryInfo(batteryInfo);
+
         //set network info
         allMetricsInfo.setNetworkInfo(networkInfo);
+
         //set client info
         allMetricsInfo.setClientInfo(clientInfo);
+
         //set device info
         allMetricsInfo.setDeviceInfo(deviceInfo);
-        //set storoage info
+
+        //set storage info
         allMetricsInfo.setStorageInfo(storageInfo);
         return allMetricsInfo;
     }

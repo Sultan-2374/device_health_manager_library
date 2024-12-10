@@ -25,11 +25,11 @@ public class BatteryInfo {
     @Override
     public String toString() {
         return "BatteryInfo{" +
-                "level=" + level +
-                ", isCharging=" + isCharging +
-                ", temperature=" + temperature +
-                ", voltage=" + voltage +
-                ", technology='" + technology + '\'' +
+                "level:" + level +
+                ", isCharging:" + isCharging +
+                ", temperature:" + temperature +
+                ", voltage:" + voltage +
+                ", technology:'" + technology + '\'' +
                 '}';
     }
 }

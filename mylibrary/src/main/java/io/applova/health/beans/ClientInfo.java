@@ -36,8 +36,8 @@ public class ClientInfo {
     @Override
     public String toString() {
         return "ClientInfo{" +
-                "deviceId='" + deviceId + '\'' +
-                ", businessId='" + businessId + '\'' +
+                "deviceId:'" + deviceId + '\'' +
+                ", businessId:'" + businessId + '\'' +
                 '}';
     }
 }

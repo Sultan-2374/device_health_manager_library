@@ -3,33 +3,22 @@ package io.applova.health.service;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.util.Log;
 import java.io.File;
 import io.applova.health.beans.StorageInfo;
 import io.realm.Realm;
 
 public class StorageInfoService {
+
+    private static final String TAG = "CacheSize";
     private final Context context;
 
     public StorageInfoService(Context context) {
         this.context = context;
     }
-
-    //    public void logStorageInfo() {
-//       StorageInfo storageInfo = deviceInfoManager.getStorageInfo();
-//        Log.d(TAG, "Total Internal Storage: " + formatSize(storageInfo.getTotalInternalStorage()));
-//        Log.d(TAG, "Available Internal Storage: " + DeviceInfoManager.formatSize(storageInfo.getAvailableInternalStorage()));
-//        Log.d(TAG, "Total External Storage: " + DeviceInfoManager.formatSize(storageInfo.getTotalExternalStorage()));
-//        Log.d(TAG, "Available External Storage: " + DeviceInfoManager.formatSize(storageInfo.getAvailableExternalStorage()));
-//        Log.d(TAG, "App Size: " + DeviceInfoManager.formatSize(storageInfo.getAppSize()));
-//        Log.d(TAG, "User Data Size: " + DeviceInfoManager.formatSize(storageInfo.getUserData()));
-//        Log.d(TAG, "Total App Size: " + DeviceInfoManager.formatSize(storageInfo.getTotalAppSize()));
-//        Log.d(TAG,"Realm location: " + Realm.getDefaultInstance().getPath());
-//        double realmSizeInMB = deviceInfoManager.getRealmDatabaseSizeInMB();
-//        Log.d(TAG, "Realm database size: " + realmSizeInMB + " MB");
-//    }
-
 
     public StorageInfo getStorageInfo() {
         StatFs internalStats = new StatFs(Environment.getDataDirectory().getPath());
@@ -38,29 +27,39 @@ public class StorageInfoService {
         // Get app-specific storage information
         long appSize = 0;
         long userData = 0;
-        //long cacheSize = 0;
+        long cacheSize = 0;
         long totalAppSize = 0;
 
         try {
             // Get app size
-            ApplicationInfo applicationInfo = context.getPackageManager()
-                    .getApplicationInfo(context.getPackageName(), 0);
+            ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
             File appDir = new File(applicationInfo.sourceDir);
             appSize = appDir.length();
 
             // Get user data size
             File dataDir = null;
-            dataDir = new File(context.getDataDir().getAbsolutePath());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                dataDir = new File(context.getDataDir().getAbsolutePath());
+            }
+            assert dataDir != null;
             userData = getFolderSize(dataDir);// - getCacheSize(context);
 
-            // Get cache size
-            //cacheSize = getCacheSize(context);
+            // Calculate cache size (include internal and external cache directories)
+            File internalCacheDir = context.getCacheDir();
+            if (internalCacheDir != null) {
+                cacheSize += getFolderSize(internalCacheDir);
+            }
+
+            File externalCacheDir = context.getExternalCacheDir();
+            if (externalCacheDir != null) {
+                cacheSize += getFolderSize(externalCacheDir);
+            }
 
             // Calculate total
-            totalAppSize = appSize + userData;  //+ cacheSize;
+            totalAppSize = appSize + userData + cacheSize;
 
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Application package not found", e);
         }
 
         return new StorageInfo(
@@ -70,7 +69,7 @@ public class StorageInfoService {
                 externalStats.getAvailableBytes(),
                 appSize,
                 userData,
-                //cacheSize,
+                cacheSize,
                 totalAppSize,
                 getRealmDatabaseSize()
         );
@@ -78,7 +77,8 @@ public class StorageInfoService {
 
     private static long getFolderSize(File folder) {
         long size = 0;
-        if (folder.isDirectory()) {
+
+        if (folder != null && folder.isDirectory()) {
             File[] files = folder.listFiles();
             if (files != null) {
                 for (File file : files) {
@@ -93,16 +93,16 @@ public class StorageInfoService {
         return size;
     }
 
-    public double getRealmDatabaseSize() {
+    public String getRealmDatabaseSize() {
 
         try (Realm realm = Realm.getDefaultInstance()) {
             String realmPath = realm.getPath();
 
-            // Get the file and check its size
+            // Get the file and check its size`
             File realmFile = new File(realmPath);
             long realmSize = realmFile.length();  // Size in bytes
 
-            return realmSize / (1024.0 * 1024.0);
+            return String.format("%.4f MB", realmSize / (1024.0 * 1024.0));
         }
     }
 

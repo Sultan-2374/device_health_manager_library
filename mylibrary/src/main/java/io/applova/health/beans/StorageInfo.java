@@ -9,21 +9,21 @@ public class StorageInfo {
     private final long availableExternalStorage;
     private final long appSize;
     private final long userData;
-    //private long cacheSize;
+    private final long cacheSize;
     private final long totalAppSize;
-    private final double realmDatabaseSize;
+    private final String realmDatabaseSize;
 
     public StorageInfo(long totalInternalStorage, long availableInternalStorage,
                        long totalExternalStorage, long availableExternalStorage,
-                       long appSize, long userData, //long cacheSize,
-                       long totalAppSize, double realmDatabaseSize) {
+                       long appSize, long userData, long cacheSize,
+                       long totalAppSize, String realmDatabaseSize) {
         this.totalInternalStorage = totalInternalStorage;
         this.availableInternalStorage = availableInternalStorage;
         this.totalExternalStorage = totalExternalStorage;
         this.availableExternalStorage = availableExternalStorage;
         this.appSize = appSize;
         this.userData = userData;
-        //this.cacheSize = cacheSize;
+        this.cacheSize = cacheSize;
         this.totalAppSize = totalAppSize;
         this.realmDatabaseSize = realmDatabaseSize;
 
@@ -36,9 +36,9 @@ public class StorageInfo {
     public long getAvailableExternalStorage() { return availableExternalStorage; }
     public long getAppSize() { return appSize; }
     public long getUserData() { return userData; }
-    //public long getCacheSize() { return cacheSize; }
+    public long getCacheSize() { return cacheSize; }
     public long getTotalAppSize() { return totalAppSize; }
-    public double getRealmDatabaseSize() { return realmDatabaseSize; }
+    public String getRealmDatabaseSize() { return realmDatabaseSize; }
 
     @Override
     public String toString() {
@@ -49,6 +49,7 @@ public class StorageInfo {
                 ", availableExternalStorage=" + formatSize(availableExternalStorage) +
                 ", appSize=" + formatSize(appSize) +
                 ", userData=" + formatSize(userData) +
+                ", cacheSize=" + formatSize(cacheSize) +
                 ", totalAppSize=" + formatSize(totalAppSize) +
                 ", realmDatabaseSize=" +  realmDatabaseSize +
                 '}';

@@ -1,9 +1,12 @@
 package io.applova.health.service;
 
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JsonConverterHelper {
+
+    private static final String TAG = "JsonConverterHelper";
 
     // Converts a bean to a JSON string
     public static String beanToJson(Object bean) {
@@ -15,10 +18,15 @@ public class JsonConverterHelper {
                 field.setAccessible(true); // Make private fields accessible
                 jsonObject.put(field.getName(), field.get(bean)); // Add field and its value
             }
+            Log.d(TAG, "beanToJson: Successfully converted bean to JSON");
             return jsonObject.toString();
-        } catch (IllegalAccessException | JSONException e) {
+        } catch (IllegalAccessException e) {
             //todo use proper log
-            return null; // Return null in case of error
+            Log.e(TAG, "beanToJson: IllegalAccessException occurred", e);
+            return null;
+        } catch (Exception e) {
+            Log.e(TAG, "beanToJson: Exception occurred", e);
+            return null;
         }
     }
 
@@ -36,10 +44,17 @@ public class JsonConverterHelper {
                     field.set(bean, value);
                 }
             }
+            Log.d(TAG, "jsonToBean: Successfully converted JSON to bean");
             return bean;
-        } catch (JSONException | IllegalAccessException | InstantiationException e) {
-            //todo proper logging
-            return null; // Return null in case of error
+        } catch (JSONException e) {
+            Log.e(TAG, "jsonToBean: JSONException occurred", e);
+            return null;
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "jsonToBean: IllegalAccessException occurred", e);
+            return null;
+        } catch (Exception e) {
+            Log.e(TAG, "jsonToBean: Exception occurred", e);
+            return null;
         }
     }
 }

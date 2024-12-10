@@ -22,10 +22,10 @@ public class DeviceInfo {
     @Override
     public String toString() {
         return "DeviceInfo{" +
-                "manufacturer='" + manufacturer + '\'' +
-                ", model='" + model + '\'' +
-                ", androidVersion='" + androidVersion + '\'' +
-                ", sdkVersion=" + sdkVersion +
+                "manufacturer:'" + manufacturer + '\'' +
+                ", model:'" + model + '\'' +
+                ", androidVersion:'" + androidVersion + '\'' +
+                ", sdkVersion:" + sdkVersion +
                 '}';
     }
 }
