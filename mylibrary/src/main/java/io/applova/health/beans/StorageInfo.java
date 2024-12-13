@@ -43,15 +43,15 @@ public class StorageInfo {
     @Override
     public String toString() {
         return "StorageInfo{" +
-                "totalInternalStorage=" + formatSize(totalInternalStorage) +
-                ", availableInternalStorage=" + formatSize(availableInternalStorage) +
-                ", totalExternalStorage=" + formatSize(totalExternalStorage) +
-                ", availableExternalStorage=" + formatSize(availableExternalStorage) +
-                ", appSize=" + formatSize(appSize) +
-                ", userData=" + formatSize(userData) +
-                ", cacheSize=" + formatSize(cacheSize) +
-                ", totalAppSize=" + formatSize(totalAppSize) +
-                ", realmDatabaseSize=" +  realmDatabaseSize +
+                "totalInternalStorage:" + formatSize(totalInternalStorage) +
+                ", availableInternalStorage:" + formatSize(availableInternalStorage) +
+                ", totalExternalStorage:" + formatSize(totalExternalStorage) +
+                ", availableExternalStorage:" + formatSize(availableExternalStorage) +
+                ", appSize:" + formatSize(appSize) +
+                ", userData:" + formatSize(userData) +
+                ", cacheSize:" + formatSize(cacheSize) +
+                ", totalAppSize:" + formatSize(totalAppSize) +
+                ", realmDatabaseSize:" +  realmDatabaseSize +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 import java.io.File;
+import java.util.Objects;
 import io.applova.health.beans.StorageInfo;
 import io.realm.Realm;
 
@@ -41,19 +42,10 @@ public class StorageInfoService {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 dataDir = new File(context.getDataDir().getAbsolutePath());
             }
-            assert dataDir != null;
-            userData = getFolderSize(dataDir);// - getCacheSize(context);
+            userData = getFolderSize(Objects.requireNonNull(dataDir));
 
-            // Calculate cache size (include internal and external cache directories)
-            File internalCacheDir = context.getCacheDir();
-            if (internalCacheDir != null) {
-                cacheSize += getFolderSize(internalCacheDir);
-            }
-
-            File externalCacheDir = context.getExternalCacheDir();
-            if (externalCacheDir != null) {
-                cacheSize += getFolderSize(externalCacheDir);
-            }
+            // Calculate cache size with more comprehensive method
+            cacheSize = calculateComprehensiveCacheSize();
 
             // Calculate total
             totalAppSize = appSize + userData + cacheSize;
@@ -73,6 +65,47 @@ public class StorageInfoService {
                 totalAppSize,
                 getRealmDatabaseSize()
         );
+    }
+
+    private long calculateComprehensiveCacheSize() {
+        long totalCacheSize = 0;
+
+        try {
+            // Internal cache directory
+            File internalCacheDir = context.getCacheDir();
+            if (internalCacheDir != null) {
+                totalCacheSize += getFolderSize(internalCacheDir);
+            }
+
+            // External cache directory
+            File externalCacheDir = context.getExternalCacheDir();
+            if (externalCacheDir != null) {
+                totalCacheSize += getFolderSize(externalCacheDir);
+            }
+
+            // Code cache directory (since Android O)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                File codeCacheDir = context.getCodeCacheDir();
+                if (codeCacheDir != null) {
+                    totalCacheSize += getFolderSize(codeCacheDir);
+                }
+            }
+
+            // Specific app-specific cache directories if needed
+            File[] additionalCacheDirs = context.getExternalCacheDirs();
+            if (additionalCacheDirs != null) {
+                for (File cacheDir : additionalCacheDirs) {
+                    if (cacheDir != null) {
+                        totalCacheSize += getFolderSize(cacheDir);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating cache size", e);
+        }
+
+        return totalCacheSize;
     }
 
     private static long getFolderSize(File folder) {
